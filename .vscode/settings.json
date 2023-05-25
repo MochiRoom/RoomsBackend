@@ -1,0 +1,9 @@
+{
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/.gitignore" : true,
+        "**/package-lock.json" : true,
+        "**/particles_380.zip" : true,
+        "**/*.js.map": true
+    }
+}
