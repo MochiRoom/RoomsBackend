@@ -12,7 +12,7 @@ const SocketServer = new WebSocketServer({port: WebSocketPort})
 const loaded = {}
 
 app.get("*", (req, res) => {
-    
+    SendFile(req, res)
 })
 
 app.listen(PORT, () => {
@@ -20,6 +20,7 @@ app.listen(PORT, () => {
 })
 
 
-function SendFile(req : express.Request, res : express.Response){
-
+async function SendFile(req : express.Request, res : express.Response){
+    const data = await fs.promises.readFile("pages/chat.html")
+    console.log(data)
 }
