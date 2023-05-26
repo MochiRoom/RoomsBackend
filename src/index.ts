@@ -5,7 +5,7 @@ const app = express()
 const PORT = 80
 
 app.get("*", (req, res) => {
-    console.log("kys")
+    console.log("ky")
 })
 
 app.listen(PORT, () => {
