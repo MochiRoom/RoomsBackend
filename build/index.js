@@ -1,19 +1,15 @@
-import express from "express";
-import { WebSocketServer } from "ws";
-import * as fs from "fs";
+import * as ws from "ws";
 const PORT = 80;
 const WebSocketPort = 443;
-const app = express();
-const SocketServer = new WebSocketServer({ port: WebSocketPort });
-const loaded = {};
-app.get("*", (req, res) => {
-    SendFile(req, res);
+const Pending = {};
+const wss = new ws.WebSocketServer({ port: WebSocketPort });
+wss.on("connection", (ws) => {
+    ws.on("message", (data, isBinary) => {
+        wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(data));
+            }
+        });
+    });
 });
-app.listen(PORT, () => {
-    console.log("Server started on port: " + PORT);
-});
-async function SendFile(req, res) {
-    const data = await fs.promises.readFile("pages/chat.html");
-    console.log(data);
-}
 //# sourceMappingURL=index.js.map

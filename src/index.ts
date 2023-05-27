@@ -1,26 +1,21 @@
-import express  from "express"
-import { WebSocket, WebSocketServer } from "ws"
-import * as fs from "fs"
+import * as ws from "ws"
 import Promise from "promise"
+import { Message } from "./messages.js"
 
 const PORT = 80
 const WebSocketPort = 443
 
-const app = express()
-const SocketServer = new WebSocketServer({port: WebSocketPort})
-
-const loaded = {}
-
-app.get("*", (req, res) => {
-    SendFile(req, res)
-})
-
-app.listen(PORT, () => {
-    console.log("Server started on port: " + PORT)
-})
-
-
-async function SendFile(req : express.Request, res : express.Response){
-    const data = await fs.promises.readFile("pages/chat.html")
-    console.log(data)
+const Pending = {
 }
+
+const wss = new ws.WebSocketServer({port: WebSocketPort})
+
+wss.on("connection", (ws) => {
+    ws.on("message", (data, isBinary) => {
+        wss.clients.forEach((client) => {
+            if(client.readyState === WebSocket.OPEN){
+                client.send(JSON.stringify(data))
+            }
+        })
+    })
+})
