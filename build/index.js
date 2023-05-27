@@ -6,7 +6,7 @@ const wss = new ws.WebSocketServer({ port: WebSocketPort });
 wss.on("connection", (ws) => {
     ws.on("message", (data, isBinary) => {
         wss.clients.forEach((client) => {
-            if (client.readyState === client.OPEN) {
+            if (client.readyState == ws.OPEN) {
                 client.send(JSON.stringify(data.toString));
             }
         });
