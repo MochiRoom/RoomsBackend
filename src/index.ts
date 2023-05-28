@@ -13,6 +13,8 @@ const wss = new ws.WebSocketServer({port: WebSocketPort})
 wss.on("connection", (ws) => {
     console.log("connected")
 
+    //on message
+
     ws.on("message", (data, isBinary) => {
         console.log("message sent: " + data.toString())
 
@@ -24,4 +26,5 @@ wss.on("connection", (ws) => {
             }
         })
     })
+
 })
