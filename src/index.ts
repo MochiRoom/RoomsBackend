@@ -20,7 +20,7 @@ wss.on("connection", (ws) => {
 
         var tMessage : Message = JSON.parse(data.toString())
 
-        console.log(tMessage)
+        Rooms.get(tMessage.room).messages.push(new Message(tMessage.data, tMessage.author, tMessage.room, tMessage.date))
 
 
         //sending the message to each client connected
@@ -31,7 +31,7 @@ wss.on("connection", (ws) => {
 
 
 
-                client.send(JSON.stringify(data.toString()))
+                client.send(JSON.stringify(Rooms.get(tMessage.room).messages[Rooms.get(tMessage.room).messages.length - 1 ]))
             }
 
         })
