@@ -1,11 +1,12 @@
 import { Message } from "./messages.js";
 
 export class Room{
-    messages : Message[]
+    public messages : Message[]
 
-    id : number
+    public id : number
 
     constructor (tId : number){
         this.id = tId
+        this.messages = []
     }
 }

@@ -1,11 +1,11 @@
 export class Message { 
-    data : string;
+    public data : string;
 
-    author : string;
+    public author : string;
 
-    room : number;
+    public room : number;
 
-    date : number;
+    public date : number;
 
     constructor (tData : string, tAuthor : string, tRoom : number, tDate : number){
         this.data = tData

@@ -1,10 +1,12 @@
 import * as ws from "ws";
+import { Message } from "./messages.js";
 import { Room } from "./room.js";
 const WebSocketPort = 443;
 const Rooms = new Map();
-Rooms.set(1, new Room(1));
+Rooms.set(0, new Room(0));
+Rooms.get(0).messages.push(new Message("anyud", "0", 0, 0));
+console.log(JSON.stringify(Rooms.get(0)));
 const wss = new ws.WebSocketServer({ port: WebSocketPort });
-console.log();
 //websocket
 wss.on("connection", (ws) => {
     console.log("connected");
