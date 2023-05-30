@@ -1,11 +1,16 @@
-export class Message {
-    id : number;
+export class Message { 
+    data : string;
 
-    contents : string;
+    author : string;
 
-    from : string;
+    room : number;
 
-    to : string;
+    date : number;
 
-    time : Date;
+    constructor (tData : string, tAuthor : string, tRoom : number, tDate : number){
+        this.data = tData
+        this.author = tAuthor
+        this.room = tRoom
+        this.date = tDate
+    }
 }
