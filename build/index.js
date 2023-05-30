@@ -12,7 +12,8 @@ wss.on("connection", (ws) => {
     console.log("connected");
     //on message
     ws.on("message", (data, isBinary) => {
-        console.log("message sent: " + data.toString());
+        console.log(JSON.parse(data.toString()));
+        //sending the message to each client connected
         wss.clients.forEach((client) => {
             if (client.readyState == ws.OPEN) {
                 console.log("sent to client");
