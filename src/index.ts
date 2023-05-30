@@ -9,10 +9,6 @@ const WebSocketPort = 443
 const Rooms = new Map<number, Room>()
 Rooms.set(0, new Room(0))
 
-Rooms.get(0).messages.push(new Message("anyud", "0", 0, 0))
-
-console.log(JSON.stringify(Rooms.get(0)))
-
 const wss = new ws.WebSocketServer({port: WebSocketPort})
 
 //websocket
@@ -22,9 +18,9 @@ wss.on("connection", (ws) => {
     //on message
     ws.on("message", (data, isBinary) => {
 
+        var tMessage : Message = JSON.parse(data.toString())
 
-
-        console.log(JSON.parse(data.toString()))
+        console.log(tMessage)
 
 
         //sending the message to each client connected
@@ -35,7 +31,7 @@ wss.on("connection", (ws) => {
 
 
 
-                client.send(JSON.stringify(data))
+                client.send(JSON.stringify(data.toString()))
             }
 
         })
