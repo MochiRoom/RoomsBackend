@@ -1,40 +1,27 @@
 import * as ws from "ws"
-import Promise from "promise"
 import { Message } from "./messages.js"
-import { json } from "stream/consumers"
 import { Room } from "./room.js"
+import { connection } from './websocket.js';
+import  express  from "express";
+import { get } from "./requests.js";
 
+// PORTS the server uses
 const WebSocketPort = 443
+const Port = 80
+
+// initiates the servers
+const app = express()
+const wss = new ws.WebSocketServer({port: WebSocketPort})
 
 const Rooms = new Map<number, Room>()
 Rooms.set(0, new Room(0))
 
-const wss = new ws.WebSocketServer({port: WebSocketPort})
+
 
 //websocket
-wss.on("connection", (ws) => {
-    console.log("connected")
+wss.on("connection", connection)
 
-    //on message
-    ws.on("message", (data, isBinary) => {
+//express server
+app.get("*", get)
 
-        var tMessage : Message = JSON.parse(data.toString())
-
-        Rooms.get(tMessage.room).messages.push(new Message(tMessage.data, tMessage.author, tMessage.room, tMessage.date))
-
-
-        //sending the message to each client connected
-        wss.clients.forEach((client) => {
-
-            if(client.readyState == ws.OPEN){
-                console.log("sent to client")
-
-
-
-                client.send(JSON.stringify(Rooms.get(tMessage.room).messages[Rooms.get(tMessage.room).messages.length - 1 ]))
-            }
-
-        })
-    })
-
-})
+export {Rooms, wss}
