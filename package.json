@@ -5,7 +5,8 @@
   "main": "build/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "develop" : "tsc -watch"
   },
   "keywords": [],
   "author": "",
