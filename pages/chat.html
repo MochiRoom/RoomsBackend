@@ -42,13 +42,9 @@
     function dispMessages(message){
         var te = document.getElementById("chat")
 
-        te.innerHTML = ""+ "<br><br>"
+        te.innerHTML += message.data + "<br><br>"
 
-        messages.forEach((element) => {
-            te.innerHTML = te.innerHTML + element
-            te.innerHTML = te.innerHTML + "<br><br>"
-        });
-        te.innerHTML = te.innerHTML + "<br><br><br><br>"
+        
     }
 
     const socket = new WebSocket("ws://"+window.location.hostname+":443")
@@ -81,4 +77,6 @@
             this.date = tDate
         }
     }   
+
+    ""
 </script>
