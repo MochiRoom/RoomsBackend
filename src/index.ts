@@ -1,9 +1,9 @@
 import * as ws from "ws"
 import { Message } from "./messages.js"
 import { Room } from "./room.js"
-import { connection } from './websocket.js';
+import { connection} from './websocket.js';
 import  express  from "express";
-import { get } from "./requests.js";
+import { get, started } from "./express.js";
 
 // PORTS the server uses
 const WebSocketPort = 443
@@ -23,5 +23,7 @@ wss.on("connection", connection)
 
 //express server
 app.get("*", get)
+app.listen(Port, started)
 
-export {Rooms, wss}
+
+export {Rooms, wss, app}

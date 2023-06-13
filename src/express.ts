@@ -1,4 +1,3 @@
-import { Express } from "express";
 import * as express from 'express';
 import * as fs from "fs"
 import * as logger from "./logger.js"
@@ -6,10 +5,14 @@ import * as logger from "./logger.js"
 const loaded = []
 
 export function get(req : express.Request, res : express.Response){
+    logger.Logger("G E T  R E Q U E S T", [])
 
+    sendFile("pages/chat.html", req, res, false)
 }
 
-
+export function started(){
+    logger.Logger("Server started", [])
+}
 
 
 
