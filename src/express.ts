@@ -5,9 +5,21 @@ import * as logger from "./logger.js"
 const loaded = []
 
 export function get(req : express.Request, res : express.Response){
-    logger.Logger("G E T  R E Q U E S T", [])
+    console.log(req.path)
 
-    sendFile("pages/chat.html", req, res, false)
+    if(req.path == "/favicon.ico"){
+        sendFile("images/logo.ico", req, res, true)
+        return
+    }
+    else if(req.path == "/web"){
+        sendFile("pages/chat.html", req, res, false)
+        return
+    }
+    else{
+        res.write("<Script>window.location.replace(window.location.origin + '/web')</Script>")
+        res.end()
+        return
+    }
 }
 
 export function started(){
