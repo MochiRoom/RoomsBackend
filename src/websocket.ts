@@ -1,6 +1,7 @@
 import * as ws from "ws"
 import { Message } from "./messages.js"
 import { Rooms, wss } from "./index.js"
+import { Room } from "./room.js"
 
 export function connection(ws : ws.WebSocket){
     console.log("connected")
