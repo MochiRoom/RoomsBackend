@@ -11,7 +11,7 @@ export function connection(ws : ws.WebSocket){
         var tMessage : Message = JSON.parse(data.toString())
 
        if (!Rooms.has(tMessage.room))
-          Rooms.set(tMessage.room, new Room())
+          Rooms.set(tMessage.room, new Room(tMessage.room))
  Rooms.get(tMessage.room).messages.push(new Message(tMessage.data, tMessage.author, tMessage.room, tMessage.date))
 
 
