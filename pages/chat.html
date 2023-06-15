@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C H A T with your friends if you have any xd</title>
+    <title>Rooms</title>
 
     <style>
         #inputMessage {
@@ -25,6 +25,12 @@
 <body style="background-color: black;">
     <div style="color: antiquewhite; font-size: 200%; text-align: center; word-wrap: break-word;" id="chat">
     </div>
+
+    <br>
+    <br>
+    <br>
+
+
     <footer>
         <div id="inputMessage">
             <form id = "fo" onsubmit="clicked(); return false">
@@ -42,10 +48,13 @@
     function dispMessages(message){
         var te = document.getElementById("chat")
 
-        te.innerHTML += message.data + "<br><br>"
+        te.innerText += message.author + " : " +message.data
+        te.innerHTML += "<br><br>"
 
         
     }
+
+    const userID = Math.round(Math.random() * 8191)
 
     const socket = new WebSocket("ws://"+window.location.hostname+":443")
 
@@ -57,7 +66,7 @@
     })
 
     function clicked(){
-        socket.send(JSON.stringify( new Message(document.getElementById("inp").value, "0", 0, 0)))
+        socket.send(JSON.stringify( new Message(document.getElementById("inp").value, userID, 0, 0)))
         document.getElementById("inp").value = ""
     }
 
