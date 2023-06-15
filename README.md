@@ -1,4 +1,4 @@
-# ToasterChat / Rooms Server (Backend)
+# Rooms Server (Backend)
 Server for chat app
 
 How to use:
