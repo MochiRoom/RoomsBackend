@@ -10,7 +10,9 @@ export function connection(ws : ws.WebSocket){
 
         var tMessage : Message = JSON.parse(data.toString())
 
-        Rooms.get(tMessage.room).messages.push(new Message(tMessage.data, tMessage.author, tMessage.room, tMessage.date))
+       if (!Rooms.has(tMessage.room))
+          Rooms.set(tMessage.room, new Room())
+ Rooms.get(tMessage.room).messages.push(new Message(tMessage.data, tMessage.author, tMessage.room, tMessage.date))
 
 
         //sending the message to each client connected
