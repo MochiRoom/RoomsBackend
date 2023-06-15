@@ -6,8 +6,9 @@ const loaded = []
 
 export function get(req : express.Request, res : express.Response){
     console.log(req.path)
+    console.log(req.body)
 
-    if(req.path == "/favicon.ico"){
+    if(req.path == "favicon.ico"){
         sendFile("images/logo.ico", req, res, true)
         return
     }
