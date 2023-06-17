@@ -2,31 +2,36 @@ import * as ws from "ws"
 import { Message } from "./messages.js"
 import { Rooms, wss } from "./index.js"
 import { Room } from "./room.js"
+import * as logger from "./logger.js"
 
 export function connection(ws : ws.WebSocket){
-    console.log("connected")
-
+    logger.Logger("Someone connected to the websocket")
+    
     //on message
     ws.on("message", (data, isBinary) => {
-
+        
         var tMessage : Message = JSON.parse(data.toString())
-
-       if (!Rooms.has(tMessage.room))
-          Rooms.set(tMessage.room, new Room(tMessage.room))
- Rooms.get(tMessage.room).messages.push(new Message(tMessage.data, tMessage.author, tMessage.room, tMessage.date))
-
+        
+        if (!Rooms.has(tMessage.room))
+        Rooms.set(tMessage.room, new Room(tMessage.room))
+        Rooms.get(tMessage.room).messages.push(new Message(tMessage.data, tMessage.author, tMessage.room, tMessage.date))
+        
+        let t = 0
 
         //sending the message to each client connected
         wss.clients.forEach((client) => {
-
+            
             if(client.readyState == ws.OPEN){
-                var Send = JSON.stringify(Rooms.get(tMessage.room).messages[Rooms.get(tMessage.room).messages.length - 1 ])
 
-                console.log("sent to client: " + Send)
+                t++
+
+                var Send = JSON.stringify(Rooms.get(tMessage.room).messages[Rooms.get(tMessage.room).messages.length - 1 ])
 
                 client.send(Send)
             }
-
+            
         })
+
+        logger.Logger("Message Receveice", ["The message was: " + tMessage.data, "From user: " + tMessage.author, "And was sent out to: " + t + " amount of clients"])
     })
 }

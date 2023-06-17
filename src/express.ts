@@ -5,7 +5,7 @@ import * as logger from "./logger.js"
 const loaded = []
 
 export function get(req : express.Request, res : express.Response){
-    console.log(req.path)
+    logger.Logger("Get request made", ["From ip: " + req.ip, "to: " + req.path])
 
     if(req.path == "/favicon.ico"){
         sendFile("images/favicon.ico", req, res, true)
