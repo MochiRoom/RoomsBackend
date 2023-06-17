@@ -60,6 +60,22 @@
         .sidebar {
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
+
+        .inputMessage {
+            display: block;
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translate(-15%, 0%);
+            margin: 0 auto;
+            background-color: gray;
+            padding-bottom: 20px;
+            padding-top: 20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-bottom: 2%;
+            border-radius: 15px;
+        }
     </style>
 </head>
 <body style="background-color: grey;">
@@ -74,16 +90,25 @@
         <div class="content" >
             content
             <hr>
+            <div id="messages">
 
+            </div>
         </div>
+    </div>
+
+    <div class="inputMessage">
+        <form onsubmit="clicked(); return false">
+            <input type="text" id="input" onsubmit="clicked()"> 
+        </form>
     </div>
 </body>
 </html>
 
 <script>
     
+    // displays one message
     function dispMessages(message){ 
-        var te = document.getElementById("chat")
+        var te = document.getElementById("messages")
         
         te.innerText += message.author + " : " +message.data
         te.innerHTML += "<br><br>"
@@ -91,10 +116,13 @@
         
     }
     
+    // gets a random user id
     const userID = Math.round(Math.random() * 8191)
     
+    // starts the socket
     const socket = new WebSocket("ws://"+window.location.hostname+":443")
     
+    // called when a message is received in the socket
     socket.addEventListener("message", function(event){
         
         UnCompressed = JSON.parse(event.data)
@@ -108,9 +136,10 @@
         dispMessages(UnCompressed)
     })
     
+    // sends a message
     function clicked(){
-        socket.send(JSON.stringify( new Message(document.getElementById("inp").value, userID, 0, 0)))
-        document.getElementById("inp").value = ""
+        socket.send(JSON.stringify( new Message(document.getElementById("input").value, userID, 0, 0)))
+        document.getElementById("input").value = ""
     }
     
     class Message { 
@@ -130,5 +159,4 @@
         }
     }   
     
-    ""
 </script>
