@@ -33,7 +33,9 @@ function sendFile( path : string, req : express.Request, res : express.Response,
 
     //checks if the path they are trying to send has already been loaded
     if(loaded[path] && stayLoaded){
-        return loaded[path]
+        res.write(loaded[path])
+        res.end()
+        return
     }
 
     // reads and sends a file
