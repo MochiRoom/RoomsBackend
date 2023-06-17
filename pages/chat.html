@@ -5,89 +5,123 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rooms</title>
-
+    
     <link rel="icon" 
-      type="image/png" 
-      href="/favicon.ico">
-
+    type="image/png" 
+    href="/favicon.ico">
+    
     <style>
-        #inputMessage {
-            display: block;
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            display: flex;
+            height: 100%;
+            
+        }
+        
+        .sidebar {
+            flex: 0 0 10%; /* Adjust the width as needed */
+            margin: 1%;
+            padding: 0.3%;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            overflow-y: scroll;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 0.3%;
+            color: white;
+            background-color: black;
+            border-radius: 10px;
+            margin: 1%;
+            overflow-y: scroll;
+        }
+        
+        /* Optional: Add some styles to make the sidebar always visible */
+        .sidebar {
             position: fixed;
-            left: 50%;
+            top: 0;
+            left: 0;
             bottom: 0;
-            transform: translate(-50%, 0%);
-            margin: 0 auto;
-            background-color: aqua;
-            padding-bottom: 20px;
-            padding-top: 20px;
-            padding-left: 20px;
-            padding-right: 20px;
+        }
+        
+        /* Optional: Add some styles to make the sidebar sticky */
+        .sidebar {
+            position: sticky;
+            top: 0;
+        }
+        
+        /* Optional: Add some styles to add a box shadow to the sidebar */
+        .sidebar {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
-<body style="background-color: black;">
-    <div style="color: antiquewhite; font-size: 200%; text-align: center; word-wrap: break-word;" id="chat">
-    </div>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
-
-    <footer>
-        <div id="inputMessage">
-            <form id = "fo" onsubmit="clicked(); return false">
-                <input type="text" id="inp" onsubmit="clicked()"> 
-                <input type="button" onclick="clicked()" value="SUBMIT">   
-            </form>
+<body style="background-color: grey;">
+    
+    <div class="container">
+        <div class="sidebar">
+            
+            sidebar
             
         </div>
-    </footer>
+        
+        <div class="content" >
+            content
+            <hr>
+
+        </div>
+    </div>
 </body>
 </html>
 
 <script>
-
-    function dispMessages(message){
+    
+    function dispMessages(message){ 
         var te = document.getElementById("chat")
-
+        
         te.innerText += message.author + " : " +message.data
         te.innerHTML += "<br><br>"
-
+        
         
     }
-
+    
     const userID = Math.round(Math.random() * 8191)
-
+    
     const socket = new WebSocket("ws://"+window.location.hostname+":443")
-
+    
     socket.addEventListener("message", function(event){
         
         UnCompressed = JSON.parse(event.data)
+        
+        // Get the content element
+        var contentElement = document.querySelector('.content');
 
-        window.scrollTo(0, document.body.scrollHeight);
-
+        // Scroll to the bottom
+        contentElement.scrollTop = contentElement.scrollHeight;
+        
         dispMessages(UnCompressed)
     })
-
+    
     function clicked(){
         socket.send(JSON.stringify( new Message(document.getElementById("inp").value, userID, 0, 0)))
         document.getElementById("inp").value = ""
     }
-
+    
     class Message { 
         data
-
+        
         author
-
+        
         room
-
+        
         date 
-
+        
         constructor (tData, tAuthor, tRoom, tDate){
             this.data = tData
             this.author = tAuthor
@@ -95,6 +129,6 @@
             this.date = tDate
         }
     }   
-
+    
     ""
 </script>
