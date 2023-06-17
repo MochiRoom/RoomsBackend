@@ -7,7 +7,7 @@
     <title>Rooms</title>
     
     <link rel="icon" 
-    type="image/ico" 
+    type="image/png" 
     href="/favicon.ico">
     
     <style>
@@ -26,6 +26,7 @@
         .sidebar {
             flex: 0 0 10%; /* Adjust the width as needed */
             margin: 1%;
+            margin-right: 0.5%;
             padding: 0.3%;
             background-color: #f1f1f1;
             border-radius: 10px;
@@ -40,6 +41,7 @@
             background-color: black;
             border-radius: 10px;
             margin: 1%;
+            margin-left: 0.5%;
             overflow-y: scroll;
             overflow-x: auto;
         }
@@ -71,10 +73,7 @@
             transform: translate(-15%, 0%);
             margin: 0 auto;
             background-color: gray;
-            padding-bottom: 20px;
-            padding-top: 20px;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding: 10px;
             margin-bottom: 2%;
             border-radius: 15px;
         }
@@ -92,7 +91,7 @@
         <div class="content" >
             content
             <hr>
-            <div id="messages">
+            <div id="messages" >
                 <!--
                     messages displayed here
                 -->
@@ -116,10 +115,23 @@
     function dispMessages(message){ 
         var te = document.getElementById("messages")
         
-        te.innerText += message.author + " : " +message.data
+        if (message.author == userID){
+            
+            var tempYourText =  document.createElement("div")
+            tempYourText.innerText = message.data
+            tempYourText.style.textAlign = "right"
+
+            te.appendChild(tempYourText)
+        }
+        else {
+            var tempSomeoneText = document.createElement("div")
+            tempSomeoneText.innerText += message.author + " : " +message.data
+            tempSomeoneText.style.textAlign = "left"
+
+            te.appendChild(tempSomeoneText)
+        }
+        
         te.innerHTML += "<br><br>"
-        
-        
     }
     
     // gets a random user id
@@ -144,8 +156,10 @@
     
     // sends a message
     function clicked(){
-        socket.send(JSON.stringify( new Message(document.getElementById("input").value, userID, 0, 0)))
-        document.getElementById("input").value = ""
+        if (document.getElementById("input").value != ""){
+            socket.send(JSON.stringify( new Message(document.getElementById("input").value, userID, 0, 0)))
+            document.getElementById("input").value = ""
+        }
     }
     
     class Message { 

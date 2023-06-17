@@ -12,6 +12,7 @@ export function get(req : express.Request, res : express.Response){
         return
     }
     else if(req.path == "/web"){
+        
         sendFile("pages/chat.html", req, res, false)
         return
     }
@@ -29,7 +30,7 @@ export function started(){
 
 
 
-function sendFile( path : string, req : express.Request, res : express.Response, stayLoaded : boolean = true ){
+function sendFile( path : string, req : express.Request, res : express.Response, stayLoaded : boolean = true ) : void{
 
     //checks if the path they are trying to send has already been loaded
     if(loaded[path] && stayLoaded){
