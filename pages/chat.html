@@ -162,7 +162,7 @@
     function dispMessages(message){ 
         var te = document.getElementById("messages")
         
-        if (message.author == userID){
+        if (message.author.id == userID){
             
             var tempYourText =  document.createElement("div")
             tempYourText.innerText = message.data
