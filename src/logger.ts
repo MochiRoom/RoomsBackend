@@ -1,3 +1,5 @@
+import * as fs from "fs"
+
 export function ErrorHappened(errors : any[]){
     Logger("E R R O R", errors)
 }

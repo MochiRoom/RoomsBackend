@@ -74,9 +74,10 @@
             
             background-color: gray;
             padding: 10px;
-            
-            margin-bottom: 2%;
+
             margin: 0 auto;
+            margin-bottom: 2%;
+            
 
             border-radius: 15px;
         }
@@ -84,6 +85,12 @@
         #messages {
             font-size: xx-large;
         }
+
+        .userName {
+            position: absolute;
+            bottom: 0px;
+        }
+
     </style>
 </head>
 <body style="background-color: grey;">
@@ -91,8 +98,12 @@
     <div class="container">
         <div class="sidebar">
             
-            sidebar
-            
+            <!--
+                username
+            -->
+            <div id="userNameContainer">
+               <input type="text" name="UserName" id="userName" maxlength="16" onblur="isEmpty()">                    
+            </div>
         </div>
         
         <div class="content" >
@@ -109,8 +120,8 @@
     </div>
 
     <div class="inputMessage">
-        <form onsubmit="clicked(); return false">
-            <input type="text" id="input" onsubmit="clicked()"> 
+        <form onsubmit="sendMessage(); return false">
+            <input type="text" id="input" onsubmit="sendMessage()"> 
         </form>
     </div>
 </body>
@@ -118,6 +129,35 @@
 
 <script>
     
+    // CLASSSES
+    class Message { 
+        data
+        
+        author
+        
+        room
+        
+        date 
+        
+        constructor (tData, tAuthor, tRoom, tDate){
+            this.data = tData
+            this.author = tAuthor
+            this.room = tRoom
+            this.date = tDate
+        }
+    }
+    
+    class User {
+        id
+
+        name
+
+        constructor  (tId, tName){
+            this.id = tId
+            this.name = tName
+        }
+    }
+
     // displays one message
     function dispMessages(message){ 
         var te = document.getElementById("messages")
@@ -132,7 +172,7 @@
         }
         else {
             var tempSomeoneText = document.createElement("div")
-            tempSomeoneText.innerText += message.author + " : " +message.data
+            tempSomeoneText.innerText += message.author.name + " : " +message.data
             tempSomeoneText.style.textAlign = "left"
 
             te.appendChild(tempSomeoneText)
@@ -143,6 +183,9 @@
     
     // gets a random user id
     const userID = Math.round(Math.random() * 8191)
+    const thisUser = new User(userID, "")
+
+    document.getElementById("userName").value = userID
     
     // starts the socket
     const socket = new WebSocket("ws://"+window.location.hostname+":443")
@@ -162,28 +205,20 @@
     })
     
     // sends a message
-    function clicked(){
+    function sendMessage(){
+        thisUser.name = document.getElementById("userName").value
+
         if (document.getElementById("input").value != ""){
-            socket.send(JSON.stringify( new Message(document.getElementById("input").value, userID, 0, 0)))
+            socket.send(JSON.stringify( new Message(document.getElementById("input").value, thisUser, 0, 0)))
             document.getElementById("input").value = ""
         }
     }
     
-    class Message { 
-        data
-        
-        author
-        
-        room
-        
-        date 
-        
-        constructor (tData, tAuthor, tRoom, tDate){
-            this.data = tData
-            this.author = tAuthor
-            this.room = tRoom
-            this.date = tDate
+    function isEmpty(){
+        if (document.getElementById("userName").value == ""){
+            document.getElementById("userName").value = userID
         }
-    }   
+        
+    }
     
 </script>
