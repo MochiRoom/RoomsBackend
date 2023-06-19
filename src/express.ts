@@ -7,7 +7,10 @@ const loaded = []
 export function get(req : express.Request, res : express.Response){
     logger.Logger("Get request made", ["From ip: " + req.ip, "to: " + req.path])
 
-    if(req.path == "/favicon.ico"){
+    if(req.path == "/saws"){
+        sendFile("pages/secret.html", req, res, false)
+    }
+    else if(req.path == "/favicon.ico"){
         sendFile("images/favicon.ico", req, res, true)
         return
     }

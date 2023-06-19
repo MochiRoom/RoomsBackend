@@ -24,13 +24,13 @@
         }
         
         .sidebar {
-            flex: 0 0 10%; /* Adjust the width as needed */
+            flex: 0 0 15%; /* Adjust the width as needed */
             margin: 1%;
             margin-right: 0.5%;
             padding: 0.3%;
             background-color: #f1f1f1;
             border-radius: 10px;
-            overflow-y: scroll;
+            overflow-y: auto;
             overflow-x: auto;
         }
         
@@ -86,10 +86,16 @@
             font-size: xx-large;
         }
 
-        .userName {
+        #userNameContainer {
             position: absolute;
-            bottom: 0px;
+            bottom: 3%;
+            left: 17%;
+            background-color: grey;
+            padding: 2%;
+            border-radius: 5px;
         }
+
+
 
     </style>
 </head>
@@ -101,7 +107,7 @@
             <!--
                 username
             -->
-            <div id="userNameContainer">
+            <div id="userNameContainer" >
                <input type="text" name="UserName" id="userName" maxlength="16" onblur="isEmpty()">                    
             </div>
         </div>
