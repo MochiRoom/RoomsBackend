@@ -3,7 +3,7 @@ import { Message } from "./messages.js"
 import { Room } from "./room.js"
 import { connection} from './websocket.js';
 import  express  from "express";
-import { get, started } from "./express.js";
+import { get, initializeRedirects, redirect, started } from "./express.js";
 
 // PORTS the server uses
 const WebSocketPort = 443
@@ -16,7 +16,10 @@ const wss = new ws.WebSocketServer({port: WebSocketPort})
 const Rooms = new Map<number, Room>()
 Rooms.set(0, new Room(0))
 
-
+// redirects
+initializeRedirects([
+    new redirect
+]);
 
 //websocket
 wss.on("connection", connection)

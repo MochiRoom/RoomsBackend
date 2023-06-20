@@ -4,25 +4,13 @@ import * as logger from "./logger.js"
 
 const loaded = []
 
+const redirects = new Map<string, string>()
+
 export function get(req : express.Request, res : express.Response){
     logger.Logger("Get request made", ["From ip: " + req.ip, "to: " + req.path])
 
-    if(req.path == "/saws"){
-        sendFile("pages/secret.html", req, res, false)
-    }
-    else if(req.path == "/favicon.ico"){
-        sendFile("images/favicon.ico", req, res, true)
-        return
-    }
-    else if(req.path == "/web"){
-        
-        sendFile("pages/chat.html", req, res, false)
-        return
-    }
-    else{
-        res.write("<Script>window.location.replace(window.location.origin + '/web')</Script>")
-        res.end()
-        return
+    if(redirects.has(req.path)){
+
     }
 }
 
@@ -58,4 +46,25 @@ function sendFile( path : string, req : express.Request, res : express.Response,
             return
         }
     })
+}
+
+
+// handles redirects
+
+export function initializeRedirects(toInitialize : redirect[]) : void{
+    toInitialize.forEach(redirect => {
+        redirect.from.forEach(from => {
+            redirects.set(from, redirect.to)
+        })
+    });
+}
+
+export class redirect{
+    from : string[]
+    to : string
+
+    constructor(tFrom : string[], tTo : string){
+        this.from = tFrom
+        this.to = tTo
+    }
 }
