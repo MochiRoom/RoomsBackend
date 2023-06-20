@@ -6,12 +6,29 @@ const loaded = []
 
 const redirects = new Map<string, string>()
 
+const accesibleFiles = {
+    "/web" : "pages/chat.html",
+    "/favicon.ico" : "images/favicon.ico",
+    "/saws" : "pages/secret.html",
+    "/images/aws-Logo.png" : "images/aws-Logo.png"
+}
+
 export function get(req : express.Request, res : express.Response){
     logger.Logger("Get request made", ["From ip: " + req.ip, "to: " + req.path])
 
     if(redirects.has(req.path)){
-
+        res.write("<Script>window.location.replace(window.location.origin + '" + redirects.get(req.path) +"')</Script>")
+        res.end()
+        return
     }
+    else if(accesibleFiles[req.path] != undefined){
+        sendFile(accesibleFiles[req.path], req, res, false)
+        return
+    }
+
+    // sends 404 if the page is not found
+    sendFile("pages/404.html", req, res, true)
+    return
 }
 
 export function started(){

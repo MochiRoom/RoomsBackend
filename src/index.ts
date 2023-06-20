@@ -18,7 +18,8 @@ Rooms.set(0, new Room(0))
 
 // redirects
 initializeRedirects([
-    new redirect
+    new redirect(["/", "/chat"], "/web"),
+    new redirect(["/sam", "/aws"], "/saws")
 ]);
 
 //websocket
