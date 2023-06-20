@@ -27,7 +27,7 @@ export function get(req : express.Request, res : express.Response){
     }
 
     // sends 404 if the page is not found
-    sendFile("pages/404.html", req, res, true)
+    sendFile("pages/404.html", req, res, false)
     return
 }
 
