@@ -1,10 +1,10 @@
-import * as ws from "ws"
+import * as websocket from "ws"
 import { Message } from "./messages.js"
 import { Rooms, wss } from "./index.js"
 import { Room } from "./room.js"
 import * as logger from "./logger.js"
 
-export function connection(ws : ws.WebSocket){
+export function connection(ws : websocket.WebSocket){
     logger.Logger("Someone connected to the websocket")
     
     //on message

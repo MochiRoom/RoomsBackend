@@ -1,12 +1,14 @@
 import * as express from 'express';
 import * as fs from "fs"
 import * as logger from "./logger.js"
+import { Rooms } from './index.js';
+import { Room } from './room.js';
 
 const loaded = []
 
 const redirects = new Map<string, string>()
 
-const accesibleFiles = {
+const accessibleFiles = {
     "/web" : "pages/chat.html",
     "/favicon.ico" : "images/favicon.ico",
     "/saws" : "pages/secret.html",
@@ -16,14 +18,33 @@ const accesibleFiles = {
 export function get(req : express.Request, res : express.Response){
     logger.Logger("Get request made", ["From ip: " + req.ip, "to: " + req.path])
 
+    // if the path would redirect then redirects
     if(redirects.has(req.path)){
         res.write("<Script>window.location.replace(window.location.origin + '" + redirects.get(req.path) +"')</Script>")
         res.end()
         return
     }
-    else if(accesibleFiles[req.path] != undefined){
-        sendFile(accesibleFiles[req.path], req, res, false)
+
+    // checks if the page is accessible and what file to send then sends that file
+    else if(accessibleFiles[req.path] != undefined){
+        sendFile(accessibleFiles[req.path], req, res, false)
         return
+    }
+
+    // sends all the messages looks like this /room/xxxxxxxx
+    else if(req.path.substring(0, 6) == "/room/" && req.path.length == 14){
+        var roomNumber : number = Number(req.path.substring(6))
+
+        if(!Number.isNaN(roomNumber)){
+
+            if (Rooms.has(roomNumber) == false){
+                Rooms.set(roomNumber, new Room(roomNumber))
+            }
+
+            res.write(JSON.stringify(Rooms.get(roomNumber).messages))
+            res.end()
+            return
+        }
     }
 
     // sends 404 if the page is not found

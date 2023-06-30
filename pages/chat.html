@@ -11,6 +11,8 @@
     href="/favicon.ico">
     
     <style>
+
+
         body, html {
             height: 100%;
             margin: 0;
@@ -24,7 +26,7 @@
         }
         
         .sidebar {
-            flex: 0 0 15%; /* Adjust the width as needed */
+            flex: 0 0 18%; /* Adjust the width as needed */
             margin: 1%;
             margin-right: 0.5%;
             padding: 0.3%;
@@ -86,15 +88,49 @@
             font-size: xx-large;
         }
 
-        #userNameContainer {
-            position: absolute;
-            bottom: 3%;
-            left: 17%;
-            background-color: grey;
-            padding: 2%;
-            border-radius: 5px;
+        /* bottom part of sidebar */
+        .sidebar{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
         }
 
+        .middle, .top, .bottom{
+            height: 100%;
+
+            background-color: #d1d1d1;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 2%;
+            width: 90%;
+        }
+
+        .middle{
+            flex: 0 0 78%;
+            overflow-y: scroll;
+            overflow-x: auto;
+        }
+
+        .bottom{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            width: 85%;
+        }
+
+        #userName{
+            padding: 7px;
+            padding-bottom: 3px;
+            padding-top: 3px;
+            background-color: black;
+            color: white;
+            border-radius: 15px;
+            text-align: center;
+            font-size: large;
+            width: 70%;
+        }
 
 
     </style>
@@ -103,13 +139,28 @@
     
     <div class="container">
         <div class="sidebar">
-            
             <!--
-                username
+                top part (join and stuff)
             -->
-            <div id="userNameContainer" >
-               <input type="text" name="UserName" id="userName" maxlength="16" onblur="isEmpty()">                    
+            <div class="top">
+                top
             </div>
+
+            <!--
+                rooms
+            -->
+            <div class="middle">
+                rooms
+            </div>
+
+            <!--
+                bottom part (username for now, sign in later)
+            -->
+            <div class="bottom">
+                <input type="text" name="UserName" id="userName" maxlength="16" onblur="isEmpty()">
+            </div>
+
+
         </div>
         
         <div class="content" >
@@ -168,21 +219,24 @@
     function dispMessages(message){ 
         var te = document.getElementById("messages")
         
+        var tempText =  document.createElement("div")
+
         if (message.author.id == userID){
             
-            var tempYourText =  document.createElement("div")
-            tempYourText.innerText = message.data
-            tempYourText.style.textAlign = "right"
 
-            te.appendChild(tempYourText)
+            tempText.innerText = message.data
+            tempText.style.textAlign = "right"
+
         }
         else {
-            var tempSomeoneText = document.createElement("div")
-            tempSomeoneText.innerText += message.author.name + " : " +message.data
-            tempSomeoneText.style.textAlign = "left"
 
-            te.appendChild(tempSomeoneText)
+
+            tempText.innerText += message.author.name + " : " +message.data
+            tempText.style.textAlign = "left"
+
         }
+
+        te.appendChild(tempText)
         
         te.innerHTML += "<br><br>"
     }
