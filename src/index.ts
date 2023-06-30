@@ -13,8 +13,8 @@ const Port = 80
 const app = express()
 const wss = new ws.WebSocketServer({port: WebSocketPort})
 
-const Rooms = new Map<number, Room>()
-Rooms.set(0, new Room(0))
+const Rooms = new Map<string, Room>()
+Rooms.set("00000000", new Room("00000000"))
 
 // redirects
 initializeRedirects([

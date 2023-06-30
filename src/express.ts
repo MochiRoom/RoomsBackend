@@ -33,18 +33,15 @@ export function get(req : express.Request, res : express.Response){
 
     // sends all the messages looks like this /room/xxxxxxxx
     else if(req.path.substring(0, 6) == "/room/" && req.path.length == 14){
-        var roomNumber : number = Number(req.path.substring(6))
 
-        if(!Number.isNaN(roomNumber)){
 
-            if (Rooms.has(roomNumber) == false){
-                Rooms.set(roomNumber, new Room(roomNumber))
+            if (Rooms.has(req.path.substring(6)) == false){
+                Rooms.set(req.path.substring(6), new Room(req.path.substring(6)))
             }
 
-            res.write(JSON.stringify(Rooms.get(roomNumber).messages))
+            res.write(JSON.stringify(Rooms.get(req.path.substring(6)).messages))
             res.end()
             return
-        }
     }
 
     // sends 404 if the page is not found
