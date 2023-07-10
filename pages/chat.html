@@ -11,8 +11,8 @@
     href="/favicon.ico">
     
     <style>
-
-
+        
+        
         body, html {
             height: 100%;
             margin: 0;
@@ -66,7 +66,7 @@
         .sidebar {
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
-
+        
         .inputMessage {
             display: block;
             position: fixed;
@@ -76,18 +76,18 @@
             
             background-color: gray;
             padding: 10px;
-
+            
             margin: 0 auto;
             margin-bottom: 2%;
             
-
+            
             border-radius: 15px;
         }
-
+        
         #messages {
             font-size: xx-large;
         }
-
+        
         /* bottom part of sidebar */
         .sidebar{
             display: flex;
@@ -95,32 +95,32 @@
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .middle, .top, .bottom{
             height: 100%;
-
+            
             background-color: #d1d1d1;
             border-radius: 10px;
             margin: 10px;
             padding: 2%;
             width: 90%;
         }
-
+        
         .middle{
             flex: 0 0 78%;
             overflow-y: scroll;
             overflow-x: auto;
         }
-
-        .bottom{
+        
+        .bottom, .top{
             display: flex;
             justify-content: center;
             align-items: center;
             
             width: 85%;
         }
-
-        #userName{
+        
+        #userName, #roomCode{
             padding: 7px;
             padding-bottom: 3px;
             padding-top: 3px;
@@ -131,8 +131,23 @@
             font-size: large;
             width: 70%;
         }
-
-
+        
+        .switch {
+            display: none; /* Hide the radio buttons */
+        }
+        
+        .switch + label {
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #eaeaea;
+        }
+        
+        .switch:checked + label {
+            background-color: #a3a3a3;
+            color: #ffffff;
+        }
+        
+        
     </style>
 </head>
 <body style="background-color: grey;">
@@ -143,24 +158,35 @@
                 top part (join and stuff)
             -->
             <div class="top">
-                top
+                
+                <form onsubmit="sendMessage(); return false">
+                    <input type="text" id="roomCode" onsubmit="sendMessage()"> 
+                </form>
+                
             </div>
-
+            
             <!--
                 rooms
             -->
             <div class="middle">
-                rooms
+                <br>
+                
+                <div>
+                    <input type="radio" class="switch" id="00000000" name="switch" checked>
+                    <label for="00000000">Main</label>
+                </div>
+                
+                
             </div>
-
+            
             <!--
                 bottom part (username for now, sign in later)
             -->
             <div class="bottom">
                 <input type="text" name="UserName" id="userName" maxlength="16" onblur="isEmpty()">
             </div>
-
-
+            
+            
         </div>
         
         <div class="content" >
@@ -170,12 +196,12 @@
                 <!--
                     messages displayed here
                 -->
-
+                
             </div>
             <br> <br> <br> <br> <br>
         </div>
     </div>
-
+    
     <div class="inputMessage">
         <form onsubmit="sendMessage(); return false">
             <input type="text" id="input" onsubmit="sendMessage()"> 
@@ -206,79 +232,102 @@
     
     class User {
         id
-
+        
         name
-
+        
         constructor  (tId, tName){
             this.id = tId
             this.name = tName
         }
     }
-
-    // displays one message
-    function dispMessages(message){ 
-        var te = document.getElementById("messages")
+    
+    class Room {
+        name 
         
-        var tempText =  document.createElement("div")
-
-        if (message.author.id == userID){
+        messages 
+        
+        id 
+        
+        constructor (tId , tName ){
+            if(tId.length != 8){
+                throw error
+            }
             
-
-            tempText.innerText = message.data
-            tempText.style.textAlign = "right"
-
-        }
-        else {
-
-
-            tempText.innerText += message.author.name + " : " +message.data
-            tempText.style.textAlign = "left"
-
-        }
-
-        te.appendChild(tempText)
-        
-        te.innerHTML += "<br><br>"
-    }
-    
-    // gets a random user id
-    const userID = Math.round(Math.random() * 8191)
-    const thisUser = new User(userID, "")
-
-    document.getElementById("userName").value = userID
-    
-    // starts the socket
-    const socket = new WebSocket("ws://"+window.location.hostname+":443")
-    
-    // called when a message is received in the socket
-    socket.addEventListener("message", function(event){
-        
-        UnCompressed = JSON.parse(event.data)
-        
-        // Get the content element
-        var contentElement = document.querySelector('.content');
-
-        // Scroll to the bottom
-        contentElement.scrollTop = contentElement.scrollHeight;
-        
-        dispMessages(UnCompressed)
-    })
-    
-    // sends a message
-    function sendMessage(){
-        thisUser.name = document.getElementById("userName").value
-
-        if (document.getElementById("input").value != ""){
-            socket.send(JSON.stringify( new Message(document.getElementById("input").value, thisUser, 0, 0)))
-            document.getElementById("input").value = ""
+            this.name = tName
+            this.id = tId
+            this.messages = []
         }
     }
+
+
+
+// displays one message
+function dispMessages(message){ 
+    var te = document.getElementById("messages")
     
-    function isEmpty(){
-        if (document.getElementById("userName").value == ""){
-            document.getElementById("userName").value = userID
-        }
+    var tempText =  document.createElement("div")
+    
+    if (message.author.id == userID){
+        
+        
+        tempText.innerText = message.data
+        tempText.style.textAlign = "right"
+        
+    }
+    else {
+        
+        
+        tempText.innerText += message.author.name + " : " +message.data
+        tempText.style.textAlign = "left"
         
     }
     
+    te.appendChild(tempText)
+    
+    te.innerHTML += "<br><br>"
+}
+
+// gets a random user id
+const userID = Math.round(Math.random() * 8191)
+const thisUser = new User(userID, "")
+
+document.getElementById("userName").value = userID
+
+
+
+// starts the socket
+const socket = new WebSocket("ws://"+window.location.hostname+":443")
+
+// called when a message is received in the socket
+socket.addEventListener("message", function(event){
+    
+    UnCompressed = JSON.parse(event.data)
+    
+    // Get the content element
+    var contentElement = document.querySelector('.content');
+    
+    // Scroll to the bottom
+    contentElement.scrollTop = contentElement.scrollHeight;
+    
+    dispMessages(UnCompressed)
+})
+
+// sends a message
+function sendMessage(){
+    thisUser.name = document.getElementById("userName").value
+    
+    if (document.getElementById("input").value != ""){
+        socket.send(JSON.stringify( new Message(document.getElementById("input").value, thisUser, new Room("00000000", ""), 0)))
+        document.getElementById("input").value = ""
+    }
+}
+
+//if username is empty
+function isEmpty(){
+    if (document.getElementById("userName").value == ""){
+        document.getElementById("userName").value = userID
+    }
+    
+}
+
 </script>

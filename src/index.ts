@@ -14,7 +14,7 @@ const app = express()
 const wss = new ws.WebSocketServer({port: WebSocketPort})
 
 const Rooms = new Map<string, Room>()
-Rooms.set("00000000", new Room("00000000"))
+/* Rooms.set("00000000", new Room("00000000", "Main")) */
 
 // redirects
 initializeRedirects([

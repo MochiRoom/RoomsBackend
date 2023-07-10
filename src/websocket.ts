@@ -12,28 +12,31 @@ export function connection(ws : websocket.WebSocket){
         
         var tMessage : Message = JSON.parse(data.toString())
         
-        if (!Rooms.has(tMessage.room)){
-            Rooms.set(tMessage.room, new Room(tMessage.room))
+        if (!Rooms.has(tMessage.room.id)){
+            Rooms.set(tMessage.room.id, new Room(tMessage.room.id, tMessage.room.name))
         }
-
-        Rooms.get(tMessage.room).messages.push(new Message(tMessage.data, tMessage.author, tMessage.room, tMessage.date))
-        
-        let t = 0
-        
-        //sending the message to each client connected
-        wss.clients.forEach((client) => {
+        else{
             
-            if(client.readyState == ws.OPEN){
-                
-                t++
-                
-                var Send = JSON.stringify(Rooms.get(tMessage.room).messages[Rooms.get(tMessage.room).messages.length - 1 ])
-                
-                client.send(Send)
-            }
             
-        })
-        
-        logger.Logger("Message Receveice", ["The message was: " + tMessage.data, "From user: " + tMessage.author.name + " " + tMessage.author.id, "And was sent out to: " + t + " amount of clients"])
+            Rooms.get(tMessage.room.id).messages.push(new Message(tMessage.data, tMessage.author, tMessage.room, tMessage.date))
+            
+            let t = 0
+            
+            //sending the message to each client connected
+            wss.clients.forEach((client) => {
+                
+                if(client.readyState == ws.OPEN){
+                    
+                    t++
+                    
+                    var Send = JSON.stringify(Rooms.get(tMessage.room.id).messages[Rooms.get(tMessage.room.id).messages.length - 1 ])
+                    
+                    client.send(Send)
+                }
+                
+            })
+            
+            logger.Logger("Message Receveice", ["The message was: " + tMessage.data, "From user: " + tMessage.author.name + " " + tMessage.author.id, "And was sent out to: " + t + " amount of clients"])
+        }
     })
 }

@@ -36,10 +36,12 @@ export function get(req : express.Request, res : express.Response){
 
 
             if (Rooms.has(req.path.substring(6)) == false){
-                Rooms.set(req.path.substring(6), new Room(req.path.substring(6)))
+                res.write("null")
+                res.end()
+                return
             }
 
-            res.write(JSON.stringify(Rooms.get(req.path.substring(6)).messages))
+            res.write(JSON.stringify(Rooms.get(req.path.substring(6))))
             res.end()
             return
     }
