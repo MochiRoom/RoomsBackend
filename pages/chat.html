@@ -120,7 +120,7 @@
             width: 85%;
         }
         
-        #userName, #roomCode{
+        #userName, #roomCode, #rightButton{
             padding: 7px;
             padding-bottom: 3px;
             padding-top: 3px;
@@ -131,6 +131,12 @@
             font-size: large;
             width: 70%;
         }
+        
+        
+        #rightButton{
+            width: 12%;
+        }
+        
         
         .switch {
             display: none; /* Hide the radio buttons */
@@ -157,24 +163,26 @@
             <!--
                 top part (join and stuff)
             -->
-            <div class="top">
+            <div class="top" id="top">
                 
-                <form onsubmit="sendMessage(); return false">
-                    <input type="text" id="roomCode" onsubmit="sendMessage()"> 
+                <form onsubmit="joinRoom(); return false" id="roomForm">
+                    <input type="text" id="roomCode" placeholder="Room code" maxlength="8"> 
+                    <input type="submit" id="rightButton" value="Join">
                 </form>
+                
                 
             </div>
             
             <!--
                 rooms
             -->
-            <div class="middle">
+            <div class="middle" id="middle">
                 <br>
                 
-                <div>
+                <!-- <div>
                     <input type="radio" class="switch" id="00000000" name="switch" checked>
                     <label for="00000000">Main</label>
-                </div>
+                </div> -->
                 
                 
             </div>
@@ -190,7 +198,9 @@
         </div>
         
         <div class="content" >
-            content
+            <div id="DispName">
+                You are not in any room yet
+            </div>
             <hr>
             <div id="messages">
                 <!--
@@ -203,8 +213,8 @@
     </div>
     
     <div class="inputMessage">
-        <form onsubmit="sendMessage(); return false">
-            <input type="text" id="input" onsubmit="sendMessage()"> 
+        <form onsubmit="readMessage(); return false">
+            <input type="text" id="input" disabled> 
         </form>
     </div>
 </body>
@@ -258,76 +268,187 @@
             this.messages = []
         }
     }
-
-
-
-// displays one message
-function dispMessages(message){ 
-    var te = document.getElementById("messages")
     
-    var tempText =  document.createElement("div")
     
-    if (message.author.id == userID){
+    
+    // displays one message
+    function dispMessages(message){ 
+        var te = document.getElementById("messages")
         
+        var tempText =  document.createElement("div")
         
-        tempText.innerText = message.data
-        tempText.style.textAlign = "right"
+        if (message.author.id == userID){
+            
+            
+            tempText.innerText = message.data
+            tempText.style.textAlign = "right"
+            
+        }
+        else {
+            
+            
+            tempText.innerText += message.author.name + " : " +message.data
+            tempText.style.textAlign = "left"
+            
+        }
         
+        te.appendChild(tempText)
+        
+        te.innerHTML += "<br><br>"
     }
-    else {
+    
+    // gets a random user id
+    const userID = Math.round(Math.random() * 8191)
+    const thisUser = new User(userID, "")
+    var tempCode = ""
+    document.getElementById("userName").value = userID
+    
+    var currentRoom = null
+    
+    // starts the socket
+    const socket = new WebSocket("ws://"+window.location.hostname+":443")
+    
+    // called when a message is received in the socket
+    socket.addEventListener("message", function(event){
         
+        UnCompressed = JSON.parse(event.data)
         
-        tempText.innerText += message.author.name + " : " +message.data
-        tempText.style.textAlign = "left"
+        // Get the content element
+        var contentElement = document.querySelector('.content');
         
-    }
+        // Scroll to the bottom
+        contentElement.scrollTop = contentElement.scrollHeight;
+        
+        if(UnCompressed.room.id == currentRoom){
+            dispMessages(UnCompressed)
+        }
+        
+    })
     
-    te.appendChild(tempText)
-    
-    te.innerHTML += "<br><br>"
-}
+    //reads the value and sends the message of text input
+    function readMessage(){
 
-// gets a random user id
-const userID = Math.round(Math.random() * 8191)
-const thisUser = new User(userID, "")
-
-document.getElementById("userName").value = userID
-
-
-
-// starts the socket
-const socket = new WebSocket("ws://"+window.location.hostname+":443")
-
-// called when a message is received in the socket
-socket.addEventListener("message", function(event){
-    
-    UnCompressed = JSON.parse(event.data)
-    
-    // Get the content element
-    var contentElement = document.querySelector('.content');
-    
-    // Scroll to the bottom
-    contentElement.scrollTop = contentElement.scrollHeight;
-    
-    dispMessages(UnCompressed)
-})
-
-// sends a message
-function sendMessage(){
-    thisUser.name = document.getElementById("userName").value
-    
-    if (document.getElementById("input").value != ""){
-        socket.send(JSON.stringify( new Message(document.getElementById("input").value, thisUser, new Room("00000000", ""), 0)))
+            
+        
+        sendMessage(document.getElementById("input").value, currentRoom)
         document.getElementById("input").value = ""
     }
-}
 
-//if username is empty
-function isEmpty(){
-    if (document.getElementById("userName").value == ""){
-        document.getElementById("userName").value = userID
+
+    // sends a message
+    function sendMessage(MessageSend, toRoom){
+        thisUser.name = document.getElementById("userName").value
+        
+
+        if (MessageSend != ""){
+            socket.send(JSON.stringify( new Message(MessageSend, thisUser, new Room(toRoom, ""), 0)))
+        }
     }
     
-}
+    //if username is empty
+    function isEmpty(){
+        if (document.getElementById("userName").value == ""){
+            document.getElementById("userName").value = userID
+        }
+        
+    }
+    
+    // joins a room
+    function joinRoom(){
+        const roomCode = document.getElementById("roomCode").value
+        const url = "/room/" + roomCode
+        if (roomCode.length == 8){
+            const response = httpGet(url)
+            
+            // if the room does not exist
+            if(response == "null"){
+                tempCode = roomCode
+                document.getElementById("top").innerHTML = "<form onsubmit='createRoom(); return false' id='roomForm'><input type='text' id='roomCode' placeholder='Room name' maxlength='16'> <input type='submit' id='rightButton' value='Create' ></form>"
+            }
+            
+            // if the room exists
+            else{
+                var parsed = JSON.parse(response)
+                addRoom(parsed.id, parsed.name)
+                document.getElementById("roomCode").value = ""
+            }
+        }
+        
+        
+        
+    }
+    
+    function httpGet(theUrl)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+        xmlHttp.send( null );
+        return xmlHttp.responseText;
+    }
+
+    function addRoom(roomID, roomName){
+        var NewId = new String(roomID)
+        while(NewId.length < 8){
+            NewId = "0" + NewId
+        }
+
+        var newButton = document.createElement("div")
+
+        var tMid = document.getElementById("middle")
+        
+        console.log('<div> <input type="radio" class="switch" id="'+ NewId+ '" name="switch" '+ 'onclick="dispRoom(new String("'+NewId +'"))" > <label for="'+ NewId + '">'+ roomName + '</label> </divd>' + "<br><br><br>")
+
+        
+    var onClickHandler = 'dispRoom(new String("' + NewId + '"))';
+
+    newButton.innerHTML = '<div> <input type="radio" class="switch" id="' + NewId + '" name="switch" onclick="dispRoom(new String(\'' + NewId + '\'))" > <label for="' + NewId + '">' + roomName + '</label> </div>' + "<br><br><br>";
+
+            newButton.oncl
+
+        tMid.appendChild(newButton)
+    }
+
+    function dispRoom(roomDisp){
+        currentRoom = roomDisp
+        document.getElementById("input").disabled = false
+
+        const url = "/room/" + roomDisp
+        const response = httpGet(url)
+
+        const parsedResponse = JSON.parse(response)
+
+        document.getElementById("DispName").innerText = parsedResponse.name
+
+        parsedResponse.messages.forEach(element => {
+            dispMessages(element)
+        });
+
+        var contentElement = document.querySelector('.content');
+
+        // Scroll to the bottom
+        contentElement.scrollTop = contentElement.scrollHeight;
+    }
+
+    function createRoom(){
+
+        sendMessage(document.getElementById("roomCode").value, tempCode)
+
+        addRoom(tempCode, document.getElementById("roomCode").value)
+
+        tempCode = null
+        document.getElementById("top").innerHTML = '  <form onsubmit="joinRoom(); return false" id="roomForm"><input type="text" id="roomCode" placeholder="Room code" maxlength="8">   <input type="submit" id="rightButton" value="Join"></form> '
+    }
+
+/*     
+                <form onsubmit="joinRoom(); return false" id="roomForm">
+                    <input type="text" id="roomCode" placeholder="Room code" maxlength="8"> 
+                    <input type="submit" id="rightButton" value="Join">
+                </form> */
+
+/*    
+                <form onsubmit="createRoom(); return false" id="roomForm">
+                    <input type="text" id="roomCode" placeholder="Room name" maxlength="16"> 
+                    <input type="submit" id="rightButton" value="Join" >
+                </form> */
 
 </script>

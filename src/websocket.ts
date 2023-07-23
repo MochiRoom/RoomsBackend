@@ -13,7 +13,9 @@ export function connection(ws : websocket.WebSocket){
         var tMessage : Message = JSON.parse(data.toString())
         
         if (!Rooms.has(tMessage.room.id)){
-            Rooms.set(tMessage.room.id, new Room(tMessage.room.id, tMessage.room.name))
+            Rooms.set(tMessage.room.id, new Room(tMessage.room.id, tMessage.data))
+
+            logger.Logger("Room created", ["someone created a room with id: "+ tMessage.room.id, "and name: " + tMessage.data])
         }
         else{
             
