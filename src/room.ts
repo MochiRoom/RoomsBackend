@@ -9,6 +9,7 @@ export class Room{
     public id : string
 
     constructor (tId : string, tName : string){
+        // if the room id isnt 8 lenght 
         if(tId.length != 8){
             throw error
         }
@@ -17,4 +18,5 @@ export class Room{
         this.id = tId
         this.messages = []
     }
+
 }

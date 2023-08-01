@@ -12,11 +12,12 @@ const accessibleFiles = {
     "/web" : "pages/chat.html",
     "/favicon.ico" : "images/favicon.ico",
     "/saws" : "pages/secret.html",
-    "/images/aws-Logo.png" : "images/aws-Logo.png"
+    "/images/aws-Logo.png" : "images/aws-Logo.png",
+    "/debug" : "pages/debug.html" // TODO: REMOVE THIS WHEN IN PRODUCTION
 }
 
 export function get(req : express.Request, res : express.Response){
-    logger.Logger("Get request made", ["From ip: " + req.ip, "to: " + req.path])
+    logger.Log("Get request made", ["From ip: " + req.ip, "to: " + req.path])
 
     // if the path would redirect then redirects
     if(redirects.has(req.path)){
@@ -52,7 +53,7 @@ export function get(req : express.Request, res : express.Response){
 }
 
 export function started(){
-    logger.Logger("Server started", [])
+    logger.Log("Server started", [])
 }
 
 

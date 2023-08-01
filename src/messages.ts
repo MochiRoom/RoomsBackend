@@ -12,6 +12,7 @@ export class Message {
     public date : number;
 
     constructor (tData : string, tAuthor : user, tRoom : Room, tDate : number){
+        // if id isnt lenght 8
         if(tRoom.id.length != 8){
             throw error
         }

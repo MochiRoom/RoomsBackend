@@ -1,10 +1,10 @@
 import * as fs from "fs"
 
 export function ErrorHappened(errors : any[]){
-    Logger("E R R O R", errors)
+    Log("E R R O R", errors)
 }
 
-export function Logger(header : string, message : any[] = []) {
+export function Log(header : string, message : any[] = []) {
     // logs an event
 
     console.log("")
