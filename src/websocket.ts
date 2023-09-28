@@ -7,10 +7,16 @@ import * as logger from "./logger.js"
 export function connection(ws : websocket.WebSocket){
     logger.Log("Someone connected to the websocket")
     
-    
+    var isAuthenticated : Boolean = false
+
     //on message
     ws.on("message", (data, isBinary) => {
-        
+
+        if(isAuthenticated == false){
+            ws.terminate()
+            return
+        }
+         
         var tMessage : Message
         try {
             tMessage = JSON.parse(data.toString())

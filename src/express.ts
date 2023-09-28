@@ -1,8 +1,9 @@
 import * as express from 'express';
 import * as fs from "fs"
 import * as logger from "./logger.js"
-import { Rooms } from './index.js';
+import { Rooms, Users } from './index.js';
 import { Room } from './room.js';
+import { user } from './user.js';
 
 const loaded = []
 
@@ -13,7 +14,8 @@ const accessibleFiles = {
     "/favicon.ico" : "images/favicon.ico",
     "/saws" : "pages/secret.html",
     "/images/aws-Logo.png" : "images/aws-Logo.png",
-    "/debug" : "pages/debug.html" // TODO: REMOVE THIS WHEN IN PRODUCTION
+    "/debug" : "pages/debug.html", // TODO: REMOVE THIS WHEN IN PRODUCTION
+    "/login" : "pages/login.html"
 }
 
 export function get(req : express.Request, res : express.Response){
@@ -56,6 +58,37 @@ export function started(){
     logger.Log("Server started", [])
 }
 
+export function post(req : express.Request, res : express.Response){
+    console.log(req.body)
+    var login : {username, password}
+
+    try {
+        login = JSON.parse(req.body)
+
+        if(login.username == undefined || login.username == null || login.password == undefined || login.password == null){
+            throw Error
+        }
+    } catch (error) {
+        logger.ErrorHappened(["Bad post request"])
+        return
+    }
+    
+
+    console.log(login.username)
+    console.log(login.password)
+
+    if(Users.has(login.username) == false){
+        Users.set(login.username, login.password)
+        res.send("OK")
+        res.end()
+        return
+    }
+
+    res.send("TAKEN")
+    res.end()
+
+
+}
 
 
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in to Rooms</title>
+</head>
+<body>
+    <form onsubmit="register(); return false">
+        <input type="text" placeholder="User Name" value="" id="name">
+        <input type="text" placeholder="Password" value="" id="password">
+        <input type="submit" value="Register">
+    </form>
+</body>
+</html>
+
+<script>
+    function register(){
+        var name = document.getElementById("name").value
+        var password = document.getElementById("password").value
+
+        var resp = httpPost(password, name)
+
+        console.log(resp)
+    }
+
+    function httpPost(tPassword, tUsername)
+    {
+        var data = JSON.stringify(new login(tPassword, tUsername))    
+
+        console.log(data)
+
+        return fetch("/", {
+            method : "POST",
+            body: data
+        })
+    }
+
+    class login{
+        password
+        username
+
+        constructor(paszi, juzi){
+            this.password = paszi
+            this.username = juzi
+        }
+    }
+</script>
