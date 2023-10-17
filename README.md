@@ -4,7 +4,7 @@ Server for chat app
 How to use:
   1. download
   2. open a terminal at the location where you downloaded it
-  3. type this into the terminal: "npm init -y"
+  3. type this into the terminal: "npm i -y"
   4. build the program with: "npm run build"
   5. to run type: "node ."
 
